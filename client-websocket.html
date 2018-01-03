@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>WEBSOCKET TEST</title>
+</head>
+<body>
+    <input type="button" value="SEND WEBSOCKET MESSAGE" onclick="sendMessage()">
+    <div id="chatlog"></div>
+    <script>
+        var ws = new WebSocket('ws://localhost:1234', 'echo-protocol');
+        function sendMessage(){
+            ws.send(Date.now());
+        }
+        ws.addEventListener("message", function(e) {
+            var time = Date.now();
+            var msg = e.data;
+            document.getElementById('chatlog').innerHTML += '<br>' + (time - msg) + 'ms';
+        });
+
+    </script>
+</body>
+</html>

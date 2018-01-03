@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>AJAX TEST</title>
+</head>
+<body>
+    <input type="button" value="SEND AJAX MESSAGE" onclick="sendMessage()">
+    <div id="chatlog"></div>
+    <script>
+    function sendMessage() {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", "http://localhost:1234/message", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var time = Date.now();
+                var msg = xmlhttp.responseText;
+                document.getElementById('chatlog').innerHTML += '<br>' + (time - msg) + 'ms';
+            }
+        }
+        var message = Date.now();
+        xmlhttp.send(message);
+    }
+    </script>
+</body>
+</html>
