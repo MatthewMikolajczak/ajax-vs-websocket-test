@@ -3,19 +3,36 @@
     <title>WEBSOCKET TEST</title>
 </head>
 <body>
-    <input type="button" value="SEND WEBSOCKET MESSAGE" onclick="sendMessage()">
+    <input type="button" value="SEND WEBSOCKET MESSAGE" onclick="sendMessage(1); ">
+    <input type="button" value="SEND x2" onclick="sendMessage(2);">
+    <input type="button" value="SEND x3" onclick="sendMessage(3);">
+    <input type="button" value="SEND x10" onclick="sendMessage(10);">
+    <input type="button" value="SEND x100" onclick="sendMessage(100);">
+    <input type="button" value="SEND x1000" onclick="sendMessage(1000);">
+    <input type="button" value="SEND x10000" onclick="sendMessage(10000);">
     <div id="chatlog"></div>
     <script>
+        var sum = 0;
+        var counter = 0;
+        var x = 0;
         var ws = new WebSocket('ws://localhost:1234', 'echo-protocol');
-        function sendMessage(){
-            ws.send(Date.now());
+        function sendMessage(loop){
+            sum = 0;
+            counter = 0;
+            x = loop;
+            for(var i = 0; i < loop; i++) ws.send(Date.now());
         }
         ws.addEventListener("message", function(e) {
             var time = Date.now();
             var msg = e.data;
-            document.getElementById('chatlog').innerHTML += '<br>' + (time - msg) + 'ms';
+            sum += (time - msg);
+            counter++;
+            if(counter == x) showResults(x);
         });
-
+        function showResults(division) {
+            document.getElementById('chatlog').innerHTML += '<br>' + division + ': ' + (sum/division) + 'ms';
+            sum = 0;
+        }
     </script>
 </body>
 </html>

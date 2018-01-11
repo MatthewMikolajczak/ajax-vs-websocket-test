@@ -3,22 +3,45 @@
     <title>AJAX TEST</title>
 </head>
 <body>
-    <input type="button" value="SEND AJAX MESSAGE" onclick="sendMessage()">
+    <input type="button" value="SEND AJAX MESSAGE" onclick="send(1)">
+    <input type="button" value="SEND x2" onclick="send(2);">
+    <input type="button" value="SEND x3" onclick="send(3);">
+    <input type="button" value="SEND x10" onclick="send(10);">
+    <input type="button" value="SEND x100" onclick="send(100);">
+    <input type="button" value="SEND x1000" onclick="send(1000);">
+    <input type="button" value="SEND x10000" onclick="send(10000);">
     <div id="chatlog"></div>
     <script>
-    function sendMessage() {
-        xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST", "http://localhost:1234/message", true);
-        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                var time = Date.now();
-                var msg = xmlhttp.responseText;
-                document.getElementById('chatlog').innerHTML += '<br>' + (time - msg) + 'ms';
-            }
+    var sum = 0;
+    var counter = 0;
+    var x = 0;
+    function send(loop) {
+        sum = 0;
+        counter = 0;
+        x = loop;
+        for(var i=0; i<loop; i++) {
+            sendMessage(i, new XMLHttpRequest());
         }
+    }
+    function sendMessage(i, xmlhttp) {
+        xmlhttp.open("POST","http://localhost:1234/message");
         var message = Date.now();
         xmlhttp.send(message);
+        xmlhttp.onreadystatechange=function(){
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+                var time = Date.now();
+                var msg = xmlhttp.responseText;
+                if(!isNaN(time - msg)) {
+                    console.log(time - msg)
+                    sum += (time - msg);
+                    counter++;
+                    if(counter == x) showResults(x);
+                }
+        }
+    }
+    function showResults(division) {
+        document.getElementById('chatlog').innerHTML += '<br>' + division + ': ' + (sum/division) + 'ms';
+        sum = 0;
     }
     </script>
 </body>
