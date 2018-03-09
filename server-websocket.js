@@ -18,5 +18,4 @@ wsServer.on('request', function(r){
         delete client;
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
-
 });
